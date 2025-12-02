@@ -1,77 +1,67 @@
 #include<iostream>
 using namespace std;
 
-class Node
-{
-    public:
+class Node {
+public:
     int prn;
     string name;
     Node* next;
 
-    Node(int p,string n)
-    {
+    Node(int p, string n) {
         prn = p;
         name = n;
         next = NULL;
     }
 };
 
-class VertexClub
-{
-    public:
+class VertexClub {
+public:
     Node* head;
 
-    VertexClub()
-    {
+    VertexClub() {
         head = NULL;
     }
 
-    void addPresident(int prn,string name)
-    {
-        Node* newNode = new Node(prn,name);
+    void addPresident(int prn, string name) {
+        Node* newNode = new Node(prn, name);
         newNode->next = head;
         head = newNode;
     }
 
-    void addSecretary(int prn,string name)
-    {
-        Node* newNode = new Node(prn,name);
-        if(head == NULL)
-        {
+    void addSecretary(int prn, string name) {
+        Node* newNode = new Node(prn, name);
+
+        if (head == NULL) {
             head = newNode;
             return;
         }
+
         Node* temp = head;
-        while(temp->next !=NULL)
-        {
+        while (temp->next != NULL)
             temp = temp->next;
-        }
+
         temp->next = newNode;
     }
 
-    void addMember(int prn,string name,int afterPRN)
-    {
+    void addMember(int prn, string name, int afterPRN) {
         Node* temp = head;
 
-        while(temp!=NULL && temp->prn !=afterPRN)
-        {
+        while (temp != NULL && temp->prn != afterPRN)
             temp = temp->next;
-        }
-        if(temp == NULL)
-        {
-            cout<<"PRN not found\n";
+
+        if (temp == NULL) {
+            cout << "PRN not found!\n";
             return;
         }
-        Node* newNode = new Node(prn,name);
+
+        Node* newNode = new Node(prn, name);
         newNode->next = temp->next;
         temp->next = newNode;
     }
 
-    void deletePresident()
-    {
-        if(head == NULL)
-        {
-            cout<<"List empty\n";
+    void deletePresident() {
+        if (head == NULL) {
+            cout << "List empty\n";
             return;
         }
 
@@ -80,109 +70,141 @@ class VertexClub
         delete temp;
     }
 
-    void deleteSecretary()
-    {
-        if(head == NULL)
-        {
-            cout<<"List empty\n";
+    void deleteSecretary() {
+        if (head == NULL) {
+            cout << "List empty\n";
             return;
         }
-        if(head->next ==NULL)
-        {
+
+        if (head->next == NULL) {
             delete head;
-            head->next = NULL;
+            head = NULL;
             return;
         }
+
         Node* temp = head;
-        while(temp->next->next!=NULL)
-        {
-            temp= temp->next;
-        }
+        while (temp->next->next != NULL)
+            temp = temp->next;
+
         delete temp->next;
         temp->next = NULL;
     }
 
-    void deleteMember(int prn)
-    {
-        if(head == NULL)
-        {
-            cout<<"List empty\n";
+    void deleteMember(int prn) {
+        if (head == NULL) {
+            cout << "List empty\n";
             return;
         }
+
+        if (head->prn == prn) {
+            deletePresident();
+            return;
+        }
+
         Node* temp = head;
 
-        while(temp->next!=NULL && temp->next->prn!=prn)
-        temp = temp->next;
+        while (temp->next != NULL && temp->next->prn != prn)
+            temp = temp->next;
 
-        if(temp->next == NULL)
-        {
-            cout<<"Member not found\n";
+        if (temp->next == NULL) {
+            cout << "Member not found\n";
             return;
         }
+
         Node* del = temp->next;
         temp->next = del->next;
         delete del;
     }
-    int countMembers()
-    {
+
+    int countMembers() {
         int count = 0;
         Node* temp = head;
-        while(temp!=NULL)
-        {
+
+        while (temp != NULL) {
             count++;
             temp = temp->next;
         }
         return count;
     }
-    void display()
-    {
-        if(head == NULL)
-        {
-            cout<<"List empty\n";
+
+    void display() {
+        if (head == NULL) {
+            cout << "List empty\n";
             return;
         }
+
         Node* temp = head;
-        cout<<"Vertext club members:\n";
-        while(temp!=NULL)
-        {
-            cout<<"PRN: "<<temp->prn<<" | Name: "<<temp->name<<endl;
+        cout << "\nVertex Club Members:\n";
+
+        while (temp != NULL) {
+            cout << "PRN: " << temp->prn << " | Name: " << temp->name << endl;
             temp = temp->next;
         }
     }
 
-    void concatenate(VertexClub& other)
-    {
-        if(head == NULL)
-        {
+    void concatenate(VertexClub& other) {
+        if (head == NULL) {
             head = other.head;
             return;
         }
+
         Node* temp = head;
-        while(temp->next!=NULL)
-        {
+        while (temp->next != NULL)
             temp = temp->next;
-        }
+
         temp->next = other.head;
     }
-    void search(int prn)
-    {
+
+    void search(int prn) {
         Node* temp = head;
-        while(temp!=NULL)
-        {
-            if(temp->prn = prn)
-            {
-                cout<<"Member found "<<temp->name<<endl;
+
+        while (temp != NULL) {
+            if (temp->prn == prn) {
+                cout << "Member found: " << temp->name << endl;
                 return;
             }
             temp = temp->next;
         }
-        cout<<"Member not found\n";
+
+        cout << "Member not found\n";
+    }
+
+    void sort() {
+        if (head == NULL || head->next == NULL)
+            return;
+
+        Node* i;
+        Node* j;
+
+        for (i = head; i != NULL; i = i->next) {
+            for (j = i->next; j != NULL; j = j->next) {
+                if (i->prn > j->prn) {
+                    swap(i->prn, j->prn);
+                    swap(i->name, j->name);
+                }
+            }
+        }
+    }
+
+    void reverse() {
+        Node* prev = NULL;
+        Node* curr = head;
+        Node* nextNode = NULL;
+
+        while (curr != NULL) {
+            nextNode = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextNode;
+        }
+
+        head = prev;
     }
 };
+
 int main() {
     VertexClub divA, divB;
 
-    // Adding sample members for Division A
     divA.addPresident(101, "Amit");
     divA.addSecretary(105, "Riya");
     divA.addMember(103, "Neha", 101);
@@ -192,7 +214,6 @@ int main() {
     divA.display();
     cout << "Total Members: " << divA.countMembers() << endl;
 
-    // Adding sample members for Division B
     divB.addPresident(201, "Siya");
     divB.addSecretary(205, "Arjun");
     divB.addMember(203, "Meera", 201);
@@ -200,26 +221,22 @@ int main() {
     cout << "\n--- Division B ---";
     divB.display();
 
-    // Concatenate lists
     cout << "\nConcatenating A + B ...\n";
     divA.concatenate(divB);
 
     cout << "\n--- Combined Club ---";
     divA.display();
 
-    // Sorting
-    // divA.sort();
-    // cout << "\n--- Sorted by PRN ---";
-    // divA.display();
+    divA.sort();
+    cout << "\n--- Sorted by PRN ---";
+    divA.display();
 
-    // Search
     cout << "\nSearching for PRN 104:\n";
     divA.search(104);
 
-    // Reverse
-    // cout << "\nReversed List:\n";
-    // divA.reverse();
-    // divA.display();
+    cout << "\nReversed List:\n";
+    divA.reverse();
+    divA.display();
 
     return 0;
 }
